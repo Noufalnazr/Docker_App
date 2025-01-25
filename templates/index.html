@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask App</title>
+    <style>
+        body, h1, p, form, input {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #121212; /* Dark background */
+            color: #e0e0e0; /* Light text color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: #1c1c1c; /* Dark background for container */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .container:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px);
+        }
+
+        h1 {
+            color: #1e90ff; /* Blue for the heading */
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        p {
+            color: #ccc; /* Light grey text color for paragraphs */
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input[type="text"] {
+            padding: 12px;
+            border: 1px solid #333;
+            background-color: #2c2c2c; /* Dark background for input fields */
+            color: #fff; /* White text */
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="text"]:hover, input[type="text"]:focus {
+            border-color: #1e90ff; /* Blue border when focused */
+            box-shadow: 0 0 8px rgba(30, 144, 255, 0.25); /* Light blue glow */
+        }
+
+        input[type="submit"] {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #1e90ff, #4682b4); /* Blue gradient for button */
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background: linear-gradient(135deg, #4682b4, #1e90ff); /* Inverted gradient on hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        input[type="submit"]:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            p {
+                font-size: 0.9rem;
+            }
+
+            input[type="text"], input[type="submit"] {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Hello Students,<br> Welcome to Hirex Solutions. Let's make a Docker Container Application with Pyhton and MYSQL!</h1>
+        <div class="messages">
+            {% for message in messages %}
+                <p>{{ message[0] }}</p>
+            {% endfor %}
+        </div>
+
+        <form id="messageForm">
+            <input type="text" name="new_message" placeholder="Enter a new message">
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#messageForm").on("submit", function(event) {
+                event.preventDefault(); // Prevent the form from submitting the traditional way
+
+                $.ajax({
+                    url: "/submit",
+                    type: "POST",
+                    data: {
+                        new_message: $("input[name='new_message']").val()
+                    },
+                    success: function(response) {
+                        if (response && response.message) {
+                            // Append the new message to the list of messages
+                            $(".messages").append("<p>" + response.message + "</p>");
+                            // Clear the input field
+                            $("input[name='new_message']").val("");
+                        } else {
+                            console.error("Unexpected response format:", response);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX Error:", status, error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
